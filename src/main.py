@@ -1,6 +1,4 @@
 """
-main.py
-
 This script carries out the process of matching our mock patients to real clinical trials. 
 We use the clinical trials dataset and the patient dataset. Ultimately, it will leverages NLP
 to score how well each patient fits the matchmaking criteria of each trial.
