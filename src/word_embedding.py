@@ -12,6 +12,7 @@ def preprocess(text):
     return text.strip().split() # splits it into a list of words
 
 # word2vec usage - to represent each word as a vector
+#chsnge
 def train_word2vec(corpus, vector_size=100, window=5, min_count=1): # can change this ??
     tokenized_corpus = [preprocess(text) for text in corpus] # preprocess the list of strings (corpus)
     model = Word2Vec(sentences=tokenized_corpus, vector_size=vector_size, window=window, min_count=min_count)
