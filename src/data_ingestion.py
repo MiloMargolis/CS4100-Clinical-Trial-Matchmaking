@@ -37,12 +37,21 @@ def fetch_trials_v2(condition="lung cancer", page_size=100):
     # Flatten data into DataFrame (example with id, title, status)
     records = []
     for study in studies:
+        idmod = study.get("protocolSection", {}).get("identificationModule", {})
+        condmod = study.get("protocolSection", {}).get("conditionsModule", {})
+        statmod = study.get("protocolSection", {}).get("statusModule", {})
+        
         record = {
-            "NCTId": study.get("protocolSection", {}).get("identificationModule", {}).get("nctId", ""),
-            "Title": study.get("protocolSection", {}).get("identificationModule", {}).get("briefTitle", ""),
-            "Condition": ", ".join(study.get("protocolSection", {}).get("conditionsModule", {}).get("conditions", [])),
-            "Status": study.get("protocolSection", {}).get("statusModule", {}).get("overallStatus", "")
+            "NCTId": idmod.get("nctId", ""),
+            "Title": idmod.get("briefTitle", ""),
+            "Condition": ", ".join(condmod.get("conditions", [])),
+            "Status": statmod.get("overallStatus", ""),
+            "Eligibility": study.get("protocolSection", {}).get("eligibilityModule", {}).get("description", ""),
+            "Phase": ", ".join(study.get("protocolSection", {}).get("designModule", {}).get("phaseList", {}).get("phases", [])),
+            "Enrollment": study.get("protocolSection", {}).get("designModule", {}).get("enrollmentInfo", {}).get("enrollmentCount", ""),
+            "StudyType": study.get("protocolSection", {}).get("designModule", {}).get("studyType", "")
         }
+
         records.append(record)
 
     df = pd.DataFrame(records)
