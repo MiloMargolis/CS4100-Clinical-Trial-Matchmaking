@@ -2,4 +2,5 @@ pandas
 requests
 scikit-learn
 matplotlib
-
+numpy
+gensim
