@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 
-def fetch_trials_v2(condition="lung cancer", page_size=10):
+def fetch_trials_v2(condition="lung cancer", page_size=100):
     base_url = "https://beta-ut.clinicaltrials.gov/api/v2/studies"
     params = {
         "query.cond": condition,  # e.g. "lung cancer"
