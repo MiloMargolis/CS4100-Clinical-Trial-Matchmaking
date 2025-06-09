@@ -16,3 +16,4 @@ def compute_similarity(patient_keywords, eligibility_text):
     tfidf_matrix = vectorizer.fit_transform(corpus)
     score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
     return score
+
