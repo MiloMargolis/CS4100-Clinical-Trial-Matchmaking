@@ -22,7 +22,7 @@ trial_names = ['Trial A', 'Trial B', 'Trial C', 'Trial D', 'Trial E']
 patient = np.array([65, 0, 1, 0])
 
 
-# Will change the distannce to precentage?
+# TODo Will change the distannce to precentage?
 
 def knn(patent_to_predict, trails, trial_names, k):
     distances_list = []
