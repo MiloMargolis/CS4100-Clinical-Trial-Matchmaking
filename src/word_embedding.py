@@ -5,6 +5,10 @@ from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 import numpy as np
 
+# helper function to be more consistent with text preeprocessing  (lowercase and stopword removed)
+def preprocess_text(text):
+    return [word for word in simple_preprocess(text, max_len=50) if word not in STOPWORDS]
+
 # trains the word2vec given corpus (the text) by turning words in corpus to vectors
 # first preprocess text using simple_preprocess (makes lowercase, cuts non-alphabetical,
 # cuts word of length < 2 and > 50, and turns into list)
