@@ -4,10 +4,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 import numpy as np
+import re
 
-# helper function to be more consistent with text preeprocessing  (lowercase and stopword removed)
+# tokenizer to preprocess the text but retain numbers in medical terms
 def preprocess_text(text):
-    return [word for word in simple_preprocess(text, max_len=50) if word not in STOPWORDS]
+    # use regex to split the text into tokens (words and number) and convert to lowercase
+    tokens = re.findall(r'\b\w+\b', text.lower())
+    # remove stopword (for example common words like "the", "and", etc) from the list of tokens
+    return [token for token in tokens if token not in STOPWORDS]
 
 # trains the word2vec given corpus (the text) by turning words in corpus to vectors
 # first preprocess text using simple_preprocess (makes lowercase, cuts non-alphabetical,
