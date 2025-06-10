@@ -40,4 +40,11 @@ def match_patients_to_trials(patients_df, trials_df, top_n=5):
 if __name__ == "__main__":
     patients_df = load_patient_data("data/patient_data.csv")
     trials_df = load_trial_data("data/clinical_trials.csv")
+    patients_df["Keywords"] = patients_df["Keywords"].fillna("").astype(str)
+    trials_df["Eligibility"] = trials_df["Eligibility"].fillna("").astype(str)
     match_patients_to_trials(patients_df, trials_df, top_n=5)
+
+    print("\nRunning bulk similarity scoring...")
+    similarity_df = compute_similarity_bulk(patients_df, trials_df)
+    similarity_df.to_csv("data/patient_trial_similarity.csv", index=False)
+    print("Saved patient trail data successfully.")
