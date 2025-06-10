@@ -36,8 +36,9 @@ Modern clinical trials often struggle with recruitment failures and design misma
    - Use `requests` and `pandas` to load clinical trial data.
    - Load patient data from CSV or database.
 2. **NLP Preprocessing**
-   - Use `spaCy` for tokenization and keyword extraction.
+   - Use `gensim` for preprocessing, tokenization, and Word2Vec (word embedding)
 3. **Similarity Matching**
+   - Use `scikit-learn` for TF-IDF (Term Frequency-Inverse Document Frequency) and cosine similarity
    - Convert patient profiles and trial eligibility criteria to vectors using `TfidfVectorizer`.
    - Calculate **cosine similarity** between patients and trials.
 4. **Predictive Modeling (Optional)**
