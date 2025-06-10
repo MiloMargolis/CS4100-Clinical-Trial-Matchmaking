@@ -9,6 +9,13 @@ from src.patient_data_ingestion import load_patient_data
 from src.nlp_matching import compute_similarity
 from src.nlp_matching import compute_similarity_bulk
 
+from src.word_embedding import (
+    train_word2vec,
+    get_tfidf_vectorizer,
+    compute_similarity_w2v
+)
+from src.predictive_model import compute_knn_distances
+
 
 def load_trial_data(filepath):
     """
@@ -17,25 +24,48 @@ def load_trial_data(filepath):
     df = pd.read_csv(filepath)
     return df
 
-def match_patients_to_trials(patients_df, trials_df, top_n=5):
+def combine_scores(nlp_score, knn_distance, alpha=0.7, beta=0.3):
     """
-    For each patient, rank clinical trials by similarity score.
+    Combines NLP score and KNN distance into a single score.
+    Higher is better.
     """
+    knn_score = 1 / (1 + knn_distance)  # Convert distance to similarity
+    return alpha * nlp_score + beta * knn_score
+
+def match_patients_to_trials(patients_df, trials_df, w2v_model, tfidf_vectorizer, top_n=5):
+    """
+    For each patient, compute NLP similarity and KNN distance to each trial.
+    Combine them into a final score and rank trials by it.
+    """
+    # Placeholder: you would typically extract features from your data here
+    trial_vectors = np.zeros((len(trials_df), 4))  # placeholder feature matrix
     for _, patient in patients_df.iterrows():
         patient_keywords = patient['Condition']
-        # Optional: add extra keywords here
+        eligibility_texts = trials_df['Eligibility'].tolist()
 
-        results = []
-        for _, trial in trials_df.iterrows():
-            eligibility_text = trial.get('Eligibility', '')
-            score = compute_similarity(patient_keywords, eligibility_text)
-            results.append((trial['NCTId'], trial['Title'], score))
+        # Compute NLP scores
+        nlp_scores = []
+        for eligibility_text in eligibility_texts:
+            nlp_score = compute_similarity_w2v(patient_keywords, eligibility_text, w2v_model, tfidf_vectorizer)
+            nlp_scores.append(nlp_score)
 
-        # Sort by similarity
-        results.sort(key=lambda x: x[2], reverse=True)
-        #print(f"\nTop {top_n} matches for Patient ID {patient['PatientID']}:")
-        for nctid, title, score in results[:top_n]:
-            print(f"  NCTId: {nctid}, Title: {title}, Score: {score:.2f}")
+        # Compute KNN distances (dummy values for now)
+        patient_vector = np.zeros(4)  # placeholder feature vector
+        knn_distances = compute_knn_distances(patient_vector, trial_vectors)
+
+        # Combine both scores
+        final_scores = []
+        for idx, trial in trials_df.iterrows():
+            combined_score = combine_scores(nlp_scores[idx], knn_distances[idx])
+            final_scores.append((trial['NCTId'], trial['Title'], combined_score))
+
+        # Sort by combined score
+        final_scores.sort(key=lambda x: x[2], reverse=True)
+
+        print(f"\nTop {top_n} matches for Patient ID {patient['PatientID']}:")
+        for nctid, title, score in final_scores[:top_n]:
+            print(f"  NCTId: {nctid}, Title: {title}, Combined Score: {score:.2f}")
+
 
 if __name__ == "__main__":
     patients_df = load_patient_data("data/patient_data.csv")
@@ -44,7 +74,12 @@ if __name__ == "__main__":
     trials_df["Eligibility"] = trials_df["Eligibility"].fillna("").astype(str)
     print("Sample patient keywords:", patients_df['Keywords'].head())
     print("Sample trial eligibility:", trials_df['Eligibility'].head())
-    match_patients_to_trials(patients_df, trials_df, top_n=5)
+    # Train Word2Vec and TF-IDF
+    corpus = patients_df["Condition"].tolist() + trials_df["Eligibility"].tolist()
+    w2v_model = train_word2vec(corpus)
+    tfidf_vectorizer = get_tfidf_vectorizer(corpus)
+    match_patients_to_trials(patients_df, trials_df, w2v_model, tfidf_vectorizer, top_n=5)
+
 
     print("\nRunning bulk similarity scoring...")
     similarity_df = compute_similarity_bulk(patients_df, trials_df)
