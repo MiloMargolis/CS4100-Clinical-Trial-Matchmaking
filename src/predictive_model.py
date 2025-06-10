@@ -1,12 +1,11 @@
-# To-Do: Add Skeleton Code
-
-#knn from sratch
-
-#figure which features of x and y are to these clincal trails. Embedding?
-
-#example to test knn:
-
 import numpy as np
+import pandas as pd
+from pathlib import Path
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+import matplotlib.pyplot as plt
 
 
 # TODO: Change the distannce to precentage.
