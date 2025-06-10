@@ -9,27 +9,25 @@
 import numpy as np
 
 clinical_trials = np.array([
-    [60, 0, 1, 0],   
-    [70, 1, 1, 0],   
+    [40, 0, 1, 0],   
+    [75, 1, 1, 0],   
     [65, 0, 0, 1],   
-    [64, 0, 1, 0],   
-    [66, 1, 1, 0],  
+    [24, 0, 1, 0],   
+    [12, 0, 1, 0],  
 ])
-
 trial_names = ['Trial A', 'Trial B', 'Trial C', 'Trial D', 'Trial E']
-
-
 patient = np.array([65, 0, 1, 0])
 
 
-# TODo Will change the distannce to precentage?
+# TODO: Change the distannce to precentage.
+# And Change so that knn handles if trails would include their name/lbale and number/info in the same variable
 
+#using knn to find a list of best clincal trails for a patient
 def knn(patent_to_predict, trails, trial_names, k):
     distances_list = []
     for trail in trails:
         #getting the distance of the new point to every trail.
         distance = np.linalg.norm(patent_to_predict - trail)
-
 
         #if clinal trails is one varibale:
         #distance = np.linalg.norm(patent_to_predict - trails[features])
@@ -45,7 +43,14 @@ def knn(patent_to_predict, trails, trial_names, k):
 
     return best_trials
     
-    
+#when we want to find the best clincal trails for a list of patients    
+def knn_mutiple_patients(patients, trails, trial_names, k):
+    patients_with_ct = []
+    for unique_patient in patients:
+        matches = knn(unique_patient, trails, trial_names, k)
+        patients_with_ct.append(matches)
+    return patients_with_ct
+
 
 result = knn(patient, clinical_trials, trial_names, 5)
 
