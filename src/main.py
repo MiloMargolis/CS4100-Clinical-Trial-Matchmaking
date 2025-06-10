@@ -33,7 +33,7 @@ def match_patients_to_trials(patients_df, trials_df, top_n=5):
 
         # Sort by similarity
         results.sort(key=lambda x: x[2], reverse=True)
-        print(f"\nTop {top_n} matches for Patient ID {patient['PatientID']}:")
+        #print(f"\nTop {top_n} matches for Patient ID {patient['PatientID']}:")
         for nctid, title, score in results[:top_n]:
             print(f"  NCTId: {nctid}, Title: {title}, Score: {score:.2f}")
 
@@ -42,9 +42,12 @@ if __name__ == "__main__":
     trials_df = load_trial_data("data/clinical_trials.csv")
     patients_df["Keywords"] = patients_df["Keywords"].fillna("").astype(str)
     trials_df["Eligibility"] = trials_df["Eligibility"].fillna("").astype(str)
+    print("Sample patient keywords:", patients_df['Keywords'].head())
+    print("Sample trial eligibility:", trials_df['Eligibility'].head())
     match_patients_to_trials(patients_df, trials_df, top_n=5)
 
     print("\nRunning bulk similarity scoring...")
     similarity_df = compute_similarity_bulk(patients_df, trials_df)
+    print("Sample similarity scores:", similarity_df.head())
     similarity_df.to_csv("data/patient_trial_similarity.csv", index=False)
     print("Saved patient trial data successfully.")
