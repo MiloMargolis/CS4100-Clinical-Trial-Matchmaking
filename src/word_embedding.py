@@ -65,7 +65,13 @@ def weighted_sentence_embedding(text, tfidf_vectorizer, w2v_model):
     # to compute weighted average for sentence (a vector for sentence)
     embeddings = np.array(embeddings)
     weights = np.array(weights)
-    return np.average(embeddings, axis=0, weights=weights)
+    # compute the weighted avg embedding
+    sentence_embedding = np.average(embeddings, axis=0, weights=weights)
+    # normalize the embedding to unit vec
+    norm = np.linalg.norm(sentence_embedding)
+    if norm > 0:
+        sentence_embedding = sentence_embedding / norm
+    return sentence_embedding
 
 
 # compute cosine similarity between sentence embedding vectors (score between -1 and 1)
