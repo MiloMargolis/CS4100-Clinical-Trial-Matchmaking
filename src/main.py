@@ -47,4 +47,4 @@ if __name__ == "__main__":
     print("\nRunning bulk similarity scoring...")
     similarity_df = compute_similarity_bulk(patients_df, trials_df)
     similarity_df.to_csv("data/patient_trial_similarity.csv", index=False)
-    print("Saved patient trail data successfully.")
+    print("Saved patient trial data successfully.")
