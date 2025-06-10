@@ -46,11 +46,12 @@ def fetch_trials_v2(condition="lung cancer", page_size=100):
             "Title": idmod.get("briefTitle", ""),
             "Condition": ", ".join(condmod.get("conditions", [])),
             "Status": statmod.get("overallStatus", ""),
-            "Eligibility": study.get("protocolSection", {}).get("eligibilityModule", {}).get("description", ""),
+            "Eligibility": study.get("protocolSection", {}).get("eligibilityModule", {}).get("eligibilityCriteria", ""),
             "Phase": ", ".join(study.get("protocolSection", {}).get("designModule", {}).get("phaseList", {}).get("phases", [])),
             "Enrollment": study.get("protocolSection", {}).get("designModule", {}).get("enrollmentInfo", {}).get("enrollmentCount", ""),
             "StudyType": study.get("protocolSection", {}).get("designModule", {}).get("studyType", "")
         }
+
 
         records.append(record)
 
@@ -60,5 +61,6 @@ def fetch_trials_v2(condition="lung cancer", page_size=100):
 if __name__ == "__main__":
     df = fetch_trials_v2()
     print(df.head())
+    print(df["Eligibility"].head(10))
     df.to_csv("data/clinical_trials.csv", index=False)
     print("Saved clinical_trials.csv successfully.")
