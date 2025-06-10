@@ -105,11 +105,11 @@ def visualize_decision_tree(clf: DecisionTreeClassifier, *, feature_names: list[
 
 
 if __name__ == "__main__":
-    # SCRIPT_DIR = Path(__file__).resolve().parent
-    # PROJECT_ROOT = SCRIPT_DIR.parent
-    # DATA_DIR = PROJECT_ROOT / "data"
-    # patient_csv = DATA_DIR / "patient_embeddings.csv"
-    # trial_csv = DATA_DIR / "trial_embeddings.csv"
+    SCRIPT_DIR = Path(__file__).resolve().parent
+    PROJECT_ROOT = SCRIPT_DIR.parent
+    DATA_DIR = PROJECT_ROOT / "data"
+    patient_csv = DATA_DIR / "patient_embeddings.csv"
+    trial_csv = DATA_DIR / "trial_embeddings.csv"
 
     # -----------------------------------------------------------------------
     # gpt csv file demo
@@ -117,8 +117,8 @@ if __name__ == "__main__":
 
     # patient_df = pd.read_csv("/Users/neyonought/Documents/CS4100-Clinical-Trial-Matchmaking/data/patient_embeddings.csv")
     # trial_df = pd.read_csv("/Users/neyonought/Documents/CS4100-Clinical-Trial-Matchmaking/data/trial_embeddings.csv")
-    patient_csv = Path("/Users/neyonought/Documents/CS4100-Clinical-Trial-Matchmaking/data/patient_embeddings.csv")
-    trial_csv = Path("/Users/neyonought/Documents/CS4100-Clinical-Trial-Matchmaking/data/trial_embeddings.csv")
+    # patient_csv = Path("/Users/neyonought/Documents/CS4100-Clinical-Trial-Matchmaking/data/patient_embeddings.csv")
+    # trial_csv = Path("/Users/neyonought/Documents/CS4100-Clinical-Trial-Matchmaking/data/trial_embeddings.csv")
 
     if patient_csv.exists() and trial_csv.exists():
         patient_df = pd.read_csv(patient_csv)
