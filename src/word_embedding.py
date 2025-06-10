@@ -19,7 +19,6 @@ def train_word2vec(corpus):  # should we change the window, vector size, or minc
     w2v_model = Word2Vec(sentences=tokenized_corpus, vector_size=100, window=5, min_count=1)
     return w2v_model
 
-# usage example (hopefully would work)
 # corpus = patients_df["Condition"].tolist() + trials_df["Eligibility"].tolist()
 # model = train_word2vec(corpus)
 
@@ -66,6 +65,8 @@ def weighted_sentence_embedding(text, tfidf_vectorizer, w2v_model):
 
 
 # compute cosine similarity between sentence embedding vectors (score between -1 and 1)
+# -1 = least similar, 1 = most similar
+# computes cosine similarity between patient keywords and eligibility text.
 def compute_similarity_w2v(patient_text, trial_text, w2v_model, tfidf_vect):
     vec1 = weighted_sentence_embedding(patient_text, tfidf_vect, w2v_model)
     vec2 = weighted_sentence_embedding(trial_text, tfidf_vect, w2v_model)
