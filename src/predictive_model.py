@@ -8,50 +8,61 @@
 
 import numpy as np
 
-clinical_trials = np.array([
-    [40, 0, 1, 0],   
-    [75, 1, 1, 0],   
-    [65, 0, 0, 1],   
-    [24, 0, 1, 0],   
-    [12, 0, 1, 0],  
-])
-trial_names = ['Trial A', 'Trial B', 'Trial C', 'Trial D', 'Trial E']
-patient = np.array([65, 0, 1, 0])
-
 
 # TODO: Change the distannce to precentage.
-# And Change so that knn handles if trails would include their name/lbale and number/info in the same variable
 
 #using knn to find a list of best clincal trails for a patient
-def knn(patent_to_predict, trails, trial_names, k):
-    distances_list = []
-    for trail in trails:
-        #getting the distance of the new point to every trail.
-        distance = np.linalg.norm(patent_to_predict - trail)
-
-        #if clinal trails is one varibale:
-        #distance = np.linalg.norm(patent_to_predict - trails[features])
-
-        #putting it in a list
-        distances_list.append(distance)
-
-    #sort the distances to get the k closest to the new point/pateint  
-    nearest_clinical = np.argsort(distances_list)[:k]
+#if clinal trail and patienrsa have their names in the vector
+def knn(patient_to_predict, trials, k):
+    best_clinals = []
     
-    #get the trail names, distances/(percentage later), and k top trails
-    best_trials = [(trial_names[i], distances_list[i]) for i in nearest_clinical]
+    for trial in trials:
+        trial_name = trial[0]
+        #get the info of clincal trail and patient
+        trial_features = np.array(trial[1:], dtype=float)
+        patient_features = np.array(patient_to_predict[1:], dtype=float)
 
-    return best_trials
+        #get the distance between clianl trail and patient and compute it to probablity
+        distance = np.linalg.norm(patient_features - trial_features)
+        probability = max(0, 100 - distance * 10)
+
+        #add it to a list
+        best_clinals.append((trial_name, probability))
+
+    #sort it to top k best clincal trails
+    k_best = sorted(best_clinals, key=lambda x: x[1], reverse=True)[:k]
     
-#when we want to find the best clincal trails for a list of patients    
-def knn_mutiple_patients(patients, trails, trial_names, k):
-    patients_with_ct = []
+    #format it
+    results = []
+    for trail_name, prob in k_best:
+        results.append(f"{trail_name}, Probablity of success is {prob:2f}%")
+
+    return results
+
+#test examples
+new_trials = [
+    ['Trial A', 600, 0, 1, 0],
+    ['Trial B', 700, 1, 1, 0],
+    ['Trial C', 65, 0, 1, 1],
+    ['Trial D', 1, 0, 1, 1]
+]
+
+new_patient = ['Patient 1', 65, 0, 1, 0]
+new_patient2 = ['Patient 2', 10, 0, 1, 0]
+
+new_patients = [new_patient, new_patient2]
+
+
+#function that lest us find the best clincal trails for each patient in a list of patients
+def knn_mutiple_patients(patients, trials, k):
+    patients_too_match_with_ct = []
+    #go through the list of pateinst and perform knn of them to the clinal trails
     for unique_patient in patients:
-        matches = knn(unique_patient, trails, trial_names, k)
-        patients_with_ct.append(matches)
-    return patients_with_ct
+        patient_name = unique_patient[0]
+        matches = knn(unique_patient, trials, k)
+        patients_too_match_with_ct.append(f"{patient_name} : {matches}")
+    return patients_too_match_with_ct
 
 
-result = knn(patient, clinical_trials, trial_names, 5)
-
-print(result)
+test = knn_mutiple_patients(new_patients, new_trials, 2)
+print(test)
