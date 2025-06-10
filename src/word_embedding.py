@@ -17,7 +17,7 @@ def preprocess_text(text):
 # paragraphs each pertaining to a different category in the data, etccc
 def train_word2vec(corpus):  # should we change the window, vector size, or mincount??
     # preprocess the list of strings - and removes any stopwords
-    tokenized_corpus = [[word for word in simple_preprocess(text) if word not in STOPWORDS] for text in corpus]
+    tokenized_corpus = [preprocess_text(text) for text in corpus]
     # train the w2v model with vector size 100, window 5 (# of words on either side of target to consider as context)
     # and the min_count of words of 1 - meaning that even if it only appears once it is added to vocab
     w2v_model = Word2Vec(sentences=tokenized_corpus, vector_size=100, window=5, min_count=1)
@@ -34,8 +34,8 @@ a note of some functions available to use on a w2v model:
 # to give more weight to the less common and more significant terms (i.e., medical terminology)
 # trains a tfidf vectorizer with the given text!
 def fit_tfidf_vect(text):
-    # tokenize in the same way as tokenized for the word2vec training - so trained in similar manner
-    return TfidfVectorizer(tokenizer=lambda x: [word for word in simple_preprocess(x, max_len=50) if word not in STOPWORDS]).fit(text)
+    # use preprocess text fucntion for consistent tokenization
+    return TfidfVectorizer(tokenizer=preprocess_text(text).fit(text))
 
 # given a piece of text (string), a trained tfidf_vect, and trained word2vec model
 # to compare semantic meaning of sentences - returns single vector (weighted average of word vectors) for sentence
@@ -75,3 +75,11 @@ def compute_similarity_w2v(patient_text, trial_text, w2v_model, tfidf_vect):
     vec1 = weighted_sentence_embedding(patient_text, tfidf_vect, w2v_model)
     vec2 = weighted_sentence_embedding(trial_text, tfidf_vect, w2v_model)
     return cosine_similarity([vec1], [vec2])[0][0]
+
+# save the trained word2vec model 
+def save_w2v_model(model, path):
+    model.save(path)
+
+# load in a previusly saved word2vec model from the disk 
+def load_w2v_model(path):
+    return Word2Vec.load(path)
