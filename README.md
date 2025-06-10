@@ -11,6 +11,31 @@ Modern clinical trials often struggle with recruitment failures and design misma
 - Use **NLP techniques** to compare patient data with eligibility criteria
 - Rank trials based on **fit** and (optionally) **success probability**
 
+## Document Overview
+**data** directory:
+  - clinical_trials.csv
+  - patient_data.csv
+  - patient_embeddings.csv
+  - trial_embeddings.csv
+
+**notebooks** directory:
+- exploration.ipynb
+
+**src** directory:
+- data_ingestion.py
+- main.py
+- nlp_matching.py
+- patient_data_ingestion.py
+- predictive_model.py
+- visualize_data.py
+- word_embedding.py
+
+**README.md**:
+- 
+
+**requirements.txt**:
+- 
+
 ## Features
 
 - **Data Integration**: Fetch clinical trial data from ClinicalTrials.gov (API).
