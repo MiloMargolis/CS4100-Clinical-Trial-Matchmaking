@@ -94,15 +94,10 @@ def visualize_decision_tree(clf: DecisionTreeClassifier, *, feature_names: list[
     class_names: list[str] | None = None, figsize: tuple[int, int] = (18, 8), save_path: str | None = None,):
 
     plt.figure(figsize=figsize)
-    plot_tree(
-        clf,
-        feature_names=feature_names,
-        class_names=class_names,
-        filled=True,
-        rounded=True,
-        fontsize=10,
-    )
+    plot_tree(clf, feature_names=feature_names, class_names=class_names, filled=True, rounded=True, fontsize=10,)
+
     plt.tight_layout()
+    
     if save_path:
         plt.savefig(save_path, bbox_inches="tight")
     else:
