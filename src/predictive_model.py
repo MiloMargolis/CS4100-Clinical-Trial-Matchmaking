@@ -63,59 +63,35 @@ result = knn(patient, clinical_trials, trial_names, 5)
 
 print(result)
 
-
-
-
-
 # new 
-# new 
-# new 
-
-
-
 
 # 
 # decision tree code
 # 
-def train_decision_tree(
-    X: np.ndarray,
-    y: np.ndarray,
-    *,
-    max_depth: int | None = None,
-    criterion: str = "gini",
-    test_size: float = 0.2,
-    random_state: int = 42,
-) -> DecisionTreeClassifier:
-    """Fit a DecisionTreeClassifier and print hold‑out accuracy."""
-    X_tr, X_te, y_tr, y_te = train_test_split(
-        X, y, test_size=test_size, random_state=random_state
-    )
-    clf = DecisionTreeClassifier(
-        max_depth=max_depth, criterion=criterion, random_state=random_state
-    )
+def train_decision_tree(X: np.ndarray, y: np.ndarray,
+    *, max_depth: int | None = None, criterion: str = "gini",
+    test_size: float = 0.2, random_state: int = 42,) -> DecisionTreeClassifier:
+
+    X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=test_size, random_state=random_state)
+
+    clf = DecisionTreeClassifier(max_depth=max_depth, criterion=criterion, random_state=random_state)
+
     clf.fit(X_tr, y_tr)
     acc = accuracy_score(y_te, clf.predict(X_te))
-    print(f"Decision‑Tree accuracy: {acc:.3f}")
+    print("Decision Tree's Accuracy: {:.3f}".format(acc))
     return clf
 
 
 def predict_decision_tree(clf: DecisionTreeClassifier, X: np.ndarray) -> np.ndarray:
-    """Predict with a trained Decision Tree."""
+    # Predict with a trained decision tree.
     return clf.predict(X)
 
 
 # 
 # visualisation for decision tree
 # 
-def visualize_decision_tree(
-    clf: DecisionTreeClassifier,
-    *,
-    feature_names: list[str] | None = None,
-    class_names: list[str] | None = None,
-    figsize: tuple[int, int] = (18, 8),
-    save_path: str | None = None,
-):
-    """Render the trained Decision Tree (local plt import to avoid NameError)."""
+def visualize_decision_tree(clf: DecisionTreeClassifier, *, feature_names: list[str] | None = None,
+    class_names: list[str] | None = None, figsize: tuple[int, int] = (18, 8), save_path: str | None = None,):
 
     plt.figure(figsize=figsize)
     plot_tree(
@@ -131,9 +107,6 @@ def visualize_decision_tree(
         plt.savefig(save_path, bbox_inches="tight")
     else:
         plt.show()
-
-
-
 
 
 if __name__ == "__main__":
