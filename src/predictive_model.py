@@ -1,11 +1,3 @@
-# To-Do: Add Skeleton Code
-
-#knn from sratch
-
-#figure which features of x and y are to these clincal trails. Embedding?
-
-#example to test knn:
-
 import numpy as np
 import pandas as pd
 from pathlib import Path
