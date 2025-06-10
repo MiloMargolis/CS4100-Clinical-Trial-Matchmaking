@@ -7,6 +7,8 @@ to score how well each patient fits the matchmaking criteria of each trial.
 import pandas as pd
 from src.patient_data_ingestion import load_patient_data
 from src.nlp_matching import compute_similarity
+from src.nlp_matching import compute_similarity_bulk
+
 
 def load_trial_data(filepath):
     """
