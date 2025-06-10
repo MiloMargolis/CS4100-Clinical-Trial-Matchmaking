@@ -39,14 +39,14 @@ a note of some functions available to use on a w2v model:
 # trains a tfidf vectorizer with the given text!
 def fit_tfidf_vect(text):
     # use preprocess text fucntion for consistent tokenization
-    return TfidfVectorizer(tokenizer=preprocess_text(text).fit(text))
+    return TfidfVectorizer(tokenizer=preprocess_text).fit(text)
 
 # given a piece of text (string), a trained tfidf_vect, and trained word2vec model
 # to compare semantic meaning of sentences - returns single vector (weighted average of word vectors) for sentence
 # uses tf-idf scores as weights
 def weighted_sentence_embedding(text, tfidf_vectorizer, w2v_model):
     # preprocess text - but only < 50 and if not a stopword
-    words = [word for word in simple_preprocess(text, max_len=50) if word not in STOPWORDS]
+    words = preprocess_text(text)
 
     tfidf_weights = tfidf_vectorizer.transform([" ".join(words)]) # transform into feature vector (sparse matrix)
     tfidf_vocab = tfidf_vectorizer.get_feature_names_out()  # retrieves vocab learned by tfidf model
