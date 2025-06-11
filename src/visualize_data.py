@@ -9,6 +9,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
+from src.word_embedding import train_word2vec, fit_tfidf_vect, weighted_embedding_bulk
+
+
 def plot_tsne_embeddings(patient_embeds, trial_embeds, patient_ids, trial_ids):
     """
     Plots a t-SNE visualization of patient and trial embeddings.
@@ -44,21 +47,35 @@ def plot_tsne_embeddings(patient_embeds, trial_embeds, patient_ids, trial_ids):
     plt.grid(True)
     plt.show()
 
-def load_fake_embeddings():
+def load_embeddings():
     """
-    Loads patient and trial embeddings from CSV files.
+    Loads patient and trial embeddings, by loading from csv file data and embedding from there.
     """
-    patients_df = pd.read_csv("data/patient_embeddings.csv")
-    trials_df = pd.read_csv("data/trial_embeddings.csv")
-    patient_embeds = patients_df.iloc[:, 1:].values
-    trial_embeds = trials_df.iloc[:, 1:].values
+    # first loading the patient data from csv files
+    patients_df = pd.read_csv("data/patient_data.csv")
+    trials_df = pd.read_csv("data/clinical_trials.csv")
+
+    # create corpus with loaded data, then train vector models
+    corpus = patients_df["Condition"].tolist() + trials_df["Eligibility"].tolist()
+    w2v_model = train_word2vec(corpus)
+    tfidf_vectorizer = fit_tfidf_vect(corpus)
+    trial_vectors = np.array(weighted_embedding_bulk(trials_df, "trial", tfidf_vectorizer, w2v_model))
+
+    # retrieve just the numerical values of the vectors (not the IDs/names)
+    trial_embeds = [] # for the trials
+    for (trial_text) in trial_vectors:
+        trial_embeds.append(trial_text[1:])
+    patient_vectors = np.array(weighted_embedding_bulk(patients_df, "patient", tfidf_vectorizer, w2v_model))
+    patient_embeds = []
+    for (patient_text) in patient_vectors: # for the patients
+        patient_embeds.append(patient_text[1:])
     patient_ids = patients_df['PatientID'].tolist()
     trial_ids = trials_df['NCTId'].tolist()
     return patient_embeds, trial_embeds, patient_ids, trial_ids
 
 if __name__ == "__main__":
-    # Load embeddings from CSV files
-    patient_embeds, trial_embeds, patient_ids, trial_ids = load_fake_embeddings()
+    # load data from CSV files and embed
+    patient_embeds, trial_embeds, patient_ids, trial_ids = load_embeddings()
 
-    # Plot
+    # plot (scatterplot)
     plot_tsne_embeddings(patient_embeds, trial_embeds, patient_ids, trial_ids)
