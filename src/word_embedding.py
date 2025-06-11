@@ -51,6 +51,8 @@ def weighted_sentence_embedding(text, id, tfidf_vectorizer, w2v_model):
 
     embeddings = [] # for w2v word vectors
     weights = [] # for tfidf weights
+    # to add the clinical trial or patient name at start of vector array
+    string_arr_setup = np.array([id], dtype=object)
 
     for word in words:
         if word in w2v_model.wv and word in word_to_weight: # if in w2v vocab & tfidf weight
@@ -60,7 +62,7 @@ def weighted_sentence_embedding(text, id, tfidf_vectorizer, w2v_model):
             weights.append(weight) # store the weight of the word for being in the sentence
 
     if not embeddings: # for edge case
-        return np.zeros(w2v_model.vector_size)
+        return np.concatenate((string_arr_setup, np.zeros(w2v_model.vector_size).astype(object)))
 
     # to compute weighted average for sentence (a vector for sentence)
     embeddings = np.array(embeddings)
@@ -72,8 +74,6 @@ def weighted_sentence_embedding(text, id, tfidf_vectorizer, w2v_model):
     if norm > 0:
         sentence_embedding = sentence_embedding / norm
 
-    # to add the clinical trial or patient name at start of vector array
-    string_arr_setup = np.array([id], dtype=object) # maybe have the name passed as input into func?
     return np.concatenate((string_arr_setup, sentence_embedding.astype(object)))
 
 # compute the weighted embedding for multiple data trails or multiple patients - and put them all
