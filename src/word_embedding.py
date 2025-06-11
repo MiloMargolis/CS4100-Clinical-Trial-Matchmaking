@@ -1,6 +1,5 @@
 from gensim.models import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from gensim.parsing.preprocessing import STOPWORDS
 import numpy as np
 import re
@@ -37,11 +36,11 @@ def fit_tfidf_vect(text):
     # use preprocess text function for consistent tokenization
     return TfidfVectorizer(tokenizer=preprocess_text).fit(text)
 
-# given a list of texts (strings), the id (name) of patient or trial, a trained tfidf_vect, and trained word2vec model
+# given a string, the id (name) of patient or trial, a trained tfidf_vect, and trained word2vec model
 # to compare semantic meaning of sentences - returns single vector (weighted average of word vectors) for sentence
 # uses tf-idf scores as weights
 def weighted_sentence_embedding(text, id, tfidf_vectorizer, w2v_model):
-    text = " ".join([t for t in text]) # switch from a list of strings to a singular string to fit preprocess
+    # text = " ".join([t for t in text]) # switch from a list of strings to a singular string to fit preprocess
     # preprocess text - but only < 50 and if not a stopword
     words = preprocess_text(text)
 
@@ -90,14 +89,14 @@ def weighted_embedding_bulk(specific_df, what, tfidf_vectorizer, w2v_model):
         for _, patient in specific_df.iterrows():
             patient_id = patient.get('PatientID', 'Unknown')
             patient_text = str(patient.get('Keywords', '')) # fit into a list below to work with weighted_emb function
-            results.append(weighted_sentence_embedding([patient_text], patient_id, tfidf_vectorizer, w2v_model))
+            results.append(weighted_sentence_embedding(patient_text, patient_id, tfidf_vectorizer, w2v_model))
 
 
     if what == "trial":
         for _, trial in specific_df.iterrows():
             trial_id = trial.get('NCTId', 'Unknown')
             trial_text = str(trial.get('Eligibility', '')) # fit into a list below to work with weighted_emb function
-            results.append(weighted_sentence_embedding([trial_text], trial_id, tfidf_vectorizer, w2v_model))
+            results.append(weighted_sentence_embedding(trial_text, trial_id, tfidf_vectorizer, w2v_model))
 
     return results
 
