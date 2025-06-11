@@ -13,10 +13,11 @@ import matplotlib.pyplot as plt
 #using knn to find a list of best clincal trails for a patient
 #if clinal trail and patienrsa have their names in the vector
 
-def knn(patient_to_predict, trials, k):
+def knn(patient_to_predict,trials, k):
     # get all distances between the patient and each trial
     all_distances = []
     for trial in trials:
+        #trail_name = trial[1]
         trial_vector = np.array(trial[1:], dtype=float)
         patient_vector = np.array(patient_to_predict[1:], dtype=float)
         all_distances.append(np.linalg.norm(patient_vector - trial_vector))
@@ -37,7 +38,7 @@ def knn(patient_to_predict, trials, k):
     scored.sort(key=lambda item: item[1], reverse=True)
     topk = scored[:k]
 
-    return ["{0}, Match Score = {1:.2f}%".format(name, score) for name, score in topk]
+    return "\n".join("{0}, Probablity of sucess = {1:.2f}%\n".format(name, score) for name, score in topk)
     
 
 # old code from alex 
@@ -46,7 +47,7 @@ def knn(patient_to_predict, trials, k):
 new_trials = [
     ['Trial A', 600, 0, 1, 0],
     ['Trial B', 700, 1, 1, 0],
-    ['Trial C', 65, 0, 1, 1],
+    ['Trial C', 65, 0, 1, 0],
     ['Trial D', 1, 0, 1, 1]
 ]
 
@@ -66,5 +67,9 @@ def knn_mutiple_patients(patients, trials, k):
     return patients_too_match_with_ct
 
 
-test = knn_mutiple_patients(new_patients, new_trials, 2)
+# test = knn_mutiple_patients(new_patients, new_trials, 2)
+# print(test)
+
+
+test = knn(new_patient1,new_trials, 2)
 print(test)
