@@ -45,7 +45,7 @@ def fit_tfidf_vect(text):
 # given a piece of text (string), a trained tfidf_vect, and trained word2vec model
 # to compare semantic meaning of sentences - returns single vector (weighted average of word vectors) for sentence
 # uses tf-idf scores as weights
-def weighted_sentence_embedding(text, tfidf_vectorizer, w2v_model):
+def weighted_sentence_embedding(text, who, tfidf_vectorizer, w2v_model):
     # preprocess text - but only < 50 and if not a stopword
     words = preprocess_text(text)
 
@@ -76,9 +76,14 @@ def weighted_sentence_embedding(text, tfidf_vectorizer, w2v_model):
     norm = np.linalg.norm(sentence_embedding)
     if norm > 0:
         sentence_embedding = sentence_embedding / norm
+    id = ""
+    if who == "patient":
+        id = text.get('PatientID', 'Unknown')
+    if who == "trial":
+        id = text.get('NCTId', 'Unknown')
 
     # to add the clinical trial or patient name at start of vector array
-    string_arr_setup = np.array(["name of trial"], dtype=object) # maybe have the name passed as input into func?
+    string_arr_setup = np.array([id], dtype=object) # maybe have the name passed as input into func?
     return np.concatenate((string_arr_setup, sentence_embedding.astype(object)))
 
 """
@@ -96,8 +101,8 @@ def compute_similarity_w2v(patient_text, trial_text, w2v_model, tfidf_vect):
 
 # compute cosine similarity between sentence embeddings??
 def compute_similarity_w2v(patient_text, trial_text, w2v_model, tfidf_vectorizer):
-    vec1 = weighted_sentence_embedding(patient_text, tfidf_vectorizer, w2v_model)
-    vec2 = weighted_sentence_embedding(trial_text, tfidf_vectorizer, w2v_model)
+    vec1 = weighted_sentence_embedding(patient_text, "patient", tfidf_vectorizer, w2v_model)
+    vec2 = weighted_sentence_embedding(trial_text, "trial", tfidf_vectorizer, w2v_model)
     return cosine_similarity([vec1], [vec2])[0][0]
 
 # save the trained word2vec model 
