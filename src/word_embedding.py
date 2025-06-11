@@ -42,10 +42,10 @@ def fit_tfidf_vect(text):
     # use preprocess text function for consistent tokenization
     return TfidfVectorizer(tokenizer=preprocess_text).fit(text)
 
-# given a piece of text (string), a trained tfidf_vect, and trained word2vec model
+# given a piece of text (string), the id (name) of patient or trial, a trained tfidf_vect, and trained word2vec model
 # to compare semantic meaning of sentences - returns single vector (weighted average of word vectors) for sentence
 # uses tf-idf scores as weights
-def weighted_sentence_embedding(text, who, tfidf_vectorizer, w2v_model):
+def weighted_sentence_embedding(text, id, tfidf_vectorizer, w2v_model):
     # preprocess text - but only < 50 and if not a stopword
     words = preprocess_text(text)
 
@@ -76,30 +76,36 @@ def weighted_sentence_embedding(text, who, tfidf_vectorizer, w2v_model):
     norm = np.linalg.norm(sentence_embedding)
     if norm > 0:
         sentence_embedding = sentence_embedding / norm
-    id = ""
-    if who == "patient":
-        id = text.get('PatientID', 'Unknown')
-    if who == "trial":
-        id = text.get('NCTId', 'Unknown')
 
     # to add the clinical trial or patient name at start of vector array
     string_arr_setup = np.array([id], dtype=object) # maybe have the name passed as input into func?
     return np.concatenate((string_arr_setup, sentence_embedding.astype(object)))
 
-"""
-# compute cosine similarity between sentence embedding vectors (score between -1 and 1)
-# -1 = least similar, 1 = most similar
-# computes cosine similarity between patient keywords and eligibility text.
-def compute_similarity_w2v(patient_text, trial_text, w2v_model, tfidf_vect):
-    vec1 = weighted_sentence_embedding(patient_text, tfidf_vect, w2v_model)
-    vec2 = weighted_sentence_embedding(trial_text, tfidf_vect, w2v_model)
-    # to compute weighted average for sentence (a vector for sentence)
-    embeddings = np.array(embeddings)
-    weights = np.array(weights)
-    return np.average(embeddings, axis=0, weights=weights)
-"""
+# compute the weighted embedding for multiple data trails or multiple patients - and put them all
+# in a list to be used by knn predictive_model
+# computes the weighted embedding for each patient or trial individually, then appends to result list
+# returns results as [[trialID, num, num, num], [trial2ID, num, num, num]]
+# inputs: dataframe of patients or trials, string of "patient" or "trial" to indicate who to get info for,
+#           the trained tfidf vect, and trained w2v model
+def weighted_embedding_bulk(specific_df, what, tfidf_vectorizer, w2v_model):
+    results = []
 
-# compute cosine similarity between sentence embeddings??
+    if what == "patient":
+        for _, patient in specific_df.iterrows():
+            patient_id = patient.get('PatientID', 'Unknown')
+            patient_text = str(patient.get('Keywords', ''))
+            results.append(weighted_sentence_embedding(patient_text, patient_id, tfidf_vectorizer, w2v_model))
+
+
+    if what == "trial":
+        for _, trial in specific_df.iterrows():
+            trial_id = trial.get('NCTId', 'Unknown')
+            trial_text = str(trial.get('Eligibility', ''))
+            results.append(weighted_sentence_embedding(trial_text, trial_id, tfidf_vectorizer, w2v_model))
+
+    return results
+
+# compute cosine similarity between sentence embeddings
 def compute_similarity_w2v(patient_text, trial_text, w2v_model, tfidf_vectorizer):
     vec1 = weighted_sentence_embedding(patient_text, "patient", tfidf_vectorizer, w2v_model)
     vec2 = weighted_sentence_embedding(trial_text, "trial", tfidf_vectorizer, w2v_model)
