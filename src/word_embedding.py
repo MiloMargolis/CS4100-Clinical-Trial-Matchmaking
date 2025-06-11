@@ -1,8 +1,6 @@
 from gensim.models import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from gensim.utils import simple_preprocess
-from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 import numpy as np
 import re
@@ -17,9 +15,6 @@ def preprocess_text(text):
 # trains the word2vec given corpus (the text) by turning words in corpus to vectors
 # first preprocess text using simple_preprocess (makes lowercase, cuts non-alphabetical,
 # cuts word of length < 2 and > 50, and turns into list)
-# * note it currently removes all numbers...
-# * also how are we passing the strings - as a document of 1 string, as a list of individual sentences, as a list of
-# paragraphs each pertaining to a different category in the data, etccc
 def train_word2vec(corpus):  # should we change the window, vector size, or mincount??
     # preprocess the list of strings - and removes any stopwords
     tokenized_corpus = [preprocess_text(text) for text in corpus]
@@ -42,10 +37,11 @@ def fit_tfidf_vect(text):
     # use preprocess text function for consistent tokenization
     return TfidfVectorizer(tokenizer=preprocess_text).fit(text)
 
-# given a piece of text (string), the id (name) of patient or trial, a trained tfidf_vect, and trained word2vec model
+# given a list of texts (strings), the id (name) of patient or trial, a trained tfidf_vect, and trained word2vec model
 # to compare semantic meaning of sentences - returns single vector (weighted average of word vectors) for sentence
 # uses tf-idf scores as weights
 def weighted_sentence_embedding(text, id, tfidf_vectorizer, w2v_model):
+    text = " ".join([t for t in text]) # switch from a list of strings to a singular string to fit preprocess
     # preprocess text - but only < 50 and if not a stopword
     words = preprocess_text(text)
 
@@ -93,23 +89,17 @@ def weighted_embedding_bulk(specific_df, what, tfidf_vectorizer, w2v_model):
     if what == "patient":
         for _, patient in specific_df.iterrows():
             patient_id = patient.get('PatientID', 'Unknown')
-            patient_text = str(patient.get('Keywords', ''))
-            results.append(weighted_sentence_embedding(patient_text, patient_id, tfidf_vectorizer, w2v_model))
+            patient_text = str(patient.get('Keywords', '')) # fit into a list below to work with weighted_emb function
+            results.append(weighted_sentence_embedding([patient_text], patient_id, tfidf_vectorizer, w2v_model))
 
 
     if what == "trial":
         for _, trial in specific_df.iterrows():
             trial_id = trial.get('NCTId', 'Unknown')
-            trial_text = str(trial.get('Eligibility', ''))
-            results.append(weighted_sentence_embedding(trial_text, trial_id, tfidf_vectorizer, w2v_model))
+            trial_text = str(trial.get('Eligibility', '')) # fit into a list below to work with weighted_emb function
+            results.append(weighted_sentence_embedding([trial_text], trial_id, tfidf_vectorizer, w2v_model))
 
     return results
-
-# compute cosine similarity between sentence embeddings
-def compute_similarity_w2v(patient_text, trial_text, w2v_model, tfidf_vectorizer):
-    vec1 = weighted_sentence_embedding(patient_text, "patient", tfidf_vectorizer, w2v_model)
-    vec2 = weighted_sentence_embedding(trial_text, "trial", tfidf_vectorizer, w2v_model)
-    return cosine_similarity([vec1], [vec2])[0][0]
 
 # save the trained word2vec model 
 def save_w2v_model(model, path):
@@ -118,4 +108,3 @@ def save_w2v_model(model, path):
 # load in a previusly saved word2vec model from the disk 
 def load_w2v_model(path):
     return Word2Vec.load(path)
-
