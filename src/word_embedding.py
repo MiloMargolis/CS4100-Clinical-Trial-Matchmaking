@@ -76,7 +76,10 @@ def weighted_sentence_embedding(text, tfidf_vectorizer, w2v_model):
     norm = np.linalg.norm(sentence_embedding)
     if norm > 0:
         sentence_embedding = sentence_embedding / norm
-    return sentence_embedding
+
+    # to add the clinical trial or patient name at start of vector array
+    string_arr_setup = np.array(["name of trial"], dtype=object) # maybe have the name passed as input into func?
+    return np.concatenate((string_arr_setup, sentence_embedding.astype(object)))
 
 """
 # compute cosine similarity between sentence embedding vectors (score between -1 and 1)
