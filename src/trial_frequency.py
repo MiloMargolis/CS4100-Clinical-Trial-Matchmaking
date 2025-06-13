@@ -1,40 +1,46 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import textwrap
 
-# Load top-5 match results
+# Load data
 matches = pd.read_csv("data/patient_trial_knn_top5.csv")
-
-# Load trial metadata with titles
-trials = pd.read_csv("data/clinical_trials.csv")
-trials = trials.rename(columns={"NCTId": "TrialID"})  # Match join key
-
-# Merge matches with trial titles
+trials = pd.read_csv("data/clinical_trials.csv").rename(columns={"NCTId": "TrialID"})
 merged = matches.merge(trials[["TrialID", "Title"]], on="TrialID", how="left")
-
-# Count most frequently matched trials by title
 title_counts = merged["Title"].value_counts().head(10)
 
-# Truncate long titles for readability
-def truncate_title(title, max_words=8):
-    words = title.split()
-    return " ".join(words[:max_words]) + ("..." if len(words) > max_words else "")
+# Wrap long titles onto multiple lines
+wrapped_titles = [textwrap.fill(title, width=50) for title in title_counts.index]
 
-short_titles = [truncate_title(title) for title in title_counts.index]
+# Normalize counts for soft gradient mapping
+norm = plt.Normalize(title_counts.min(), title_counts.max())
+base_colors = sns.color_palette("Blues", n_colors=100)
+mapped_colors = [base_colors[int(norm(v) * 99)] for v in title_counts.values]
 
 # Plot
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(13, 9))
 sns.set_style("whitegrid")
-barplot = sns.barplot(x=title_counts.values, y=short_titles, palette="Blues_r")
+plt.rcParams["font.family"] = "DejaVu Sans"
 
-# Add value labels to the right of bars
+barplot = sns.barplot(
+    x=title_counts.values,
+    y=wrapped_titles,
+    palette=mapped_colors
+)
+
+# Add value labels to bars
 for i, v in enumerate(title_counts.values):
-    plt.text(v + 0.5, i, str(v), va='center', fontweight='bold', fontsize=10)
+    plt.text(v + 0.5, i, str(v), va='center', fontsize=9, fontweight='bold')
 
-# Formatting
-plt.title("Top 10 Most Frequently Matched Clinical Trials", fontsize=14)
+# Titles and labels
+plt.title("Top 10 Most Frequently Matched Clinical Trials", fontsize=16, fontweight='bold', pad=15)
 plt.xlabel("Number of Patients Matched", fontsize=12)
-plt.xticks(fontsize=10, fontweight='bold')
-plt.yticks(fontsize=9, fontweight='bold')
+plt.ylabel("") 
+
+# Axis formatting
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=9)
+sns.despine(left=True, bottom=True)
+
 plt.tight_layout()
 plt.show()
