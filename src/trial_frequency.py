@@ -34,8 +34,7 @@ for i, v in enumerate(title_counts.values):
 # Formatting
 plt.title("Top 10 Most Frequently Matched Clinical Trials", fontsize=14)
 plt.xlabel("Number of Patients Matched", fontsize=12)
-plt.ylabel("Trial Title", fontsize=12)
-plt.xticks(fontsize=10)
-plt.yticks(fontsize=9)
+plt.xticks(fontsize=10, fontweight='bold')
+plt.yticks(fontsize=9, fontweight='bold')
 plt.tight_layout()
 plt.show()
