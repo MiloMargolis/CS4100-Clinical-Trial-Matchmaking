@@ -20,9 +20,9 @@ title_counts = merged["Title"].value_counts().head(10)
 wrapped_titles = [textwrap.fill(title, width=40) for title in title_counts.index]
 
 # Plot
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(12, 10))
 sns.set_style("whitegrid")
-barplot = sns.barplot(x=title_counts.values, y=wrapped_titles, palette="Blues_d")
+barplot = sns.barplot(x=title_counts.values, y=wrapped_titles, palette="Blues_r")
 
 # Add value labels to the right of bars
 for i, v in enumerate(title_counts.values):
