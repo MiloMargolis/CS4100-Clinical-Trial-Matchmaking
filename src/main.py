@@ -5,7 +5,6 @@ to score how well each patient fits the matchmaking criteria of each trial.
 """
 import pandas as pd
 from src.patient_data_ingestion import load_patient_data
-from src.nlp_matching import compute_similarity_bulk
 from src.predictive_model import knn
 
 from src.word_embedding import (
@@ -48,6 +47,7 @@ def compute_knn_distances(patient_vector, trial_vectors):
 
    return knn_distances
 '''
+top_knn_matches = []
 
 def match_patients_to_trials(patients_df, trials_df, w2v_model, tfidf_vectorizer, top_n=5):
     """
@@ -103,7 +103,11 @@ def match_patients_to_trials(patients_df, trials_df, w2v_model, tfidf_vectorizer
         print(f"\nTop {top_n} matches for Patient ID {patient['PatientID']}: a {patient['Age']} year old {patient['Sex']} seeking help with {patient['Condition']} and {patient['Keywords']}")
         for nctid, title, percent in final_scores:
             print(f"  NCTId: {nctid}, Title: {title}, {percent}")
-        # print(knn_writen_results)
+            top_knn_matches.append({
+                "PatientID": patient["PatientID"],
+                "TrialID": nctid,
+                "Score": float(percent.strip().replace('Match Score = ', '').replace('%', ''))
+            })
 
 
 if __name__ == "__main__":
@@ -119,9 +123,11 @@ if __name__ == "__main__":
     tfidf_vectorizer = fit_tfidf_vect(corpus)
     match_patients_to_trials(patients_df, trials_df, w2v_model, tfidf_vectorizer, top_n=5)
 
+    knn_df = pd.DataFrame(top_knn_matches)
+    knn_df.to_csv("data/patient_trial_knn_top5.csv", index=False)
+    print("\nSaved top 5 KNN-based matches to 'data/patient_trial_knn_top5.csv'")
 
-    print("\nRunning bulk similarity scoring...")
-    similarity_df = compute_similarity_bulk(patients_df, trials_df)
-    print("Sample similarity scores:", similarity_df.head())
-    similarity_df.to_csv("data/patient_trial_similarity.csv", index=False)
-    print("Saved patient trial data successfully.")
+
+
+
+
