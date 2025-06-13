@@ -14,8 +14,8 @@ wrapped_titles = [textwrap.fill(title, width=50) for title in title_counts.index
 
 # Normalize counts for soft gradient mapping
 norm = plt.Normalize(title_counts.min(), title_counts.max())
-base_colors = sns.color_palette("Blues", n_colors=100)
-mapped_colors = [base_colors[int(norm(v) * 99)] for v in title_counts.values]
+base_colors = sns.color_palette("Blues", n_colors=100)[30:]  
+mapped_colors = [base_colors[int(norm(v) * (len(base_colors) - 1))] for v in title_counts.values]
 
 # Plot
 plt.figure(figsize=(13, 9))
