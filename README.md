@@ -29,12 +29,6 @@ Modern clinical trials often struggle with recruitment failures and design misma
 - patient_data_ingestion.py
 - nlp_matchking.py (original test, not used in final product)
 
-**README.md**:
-- 
-
-**requirements.txt**:
-- 
-
 ## Features
 
 - **Data Integration**: Fetch clinical trial data from ClinicalTrials.gov (API).
