@@ -69,20 +69,20 @@ Modern clinical trials often struggle with recruitment failures and design misma
 ## Next Steps
 
 ### Bias Towards Cancer Trials
-Our current alaysis reveals a strong bias toward cancer related trials in the top match results:
-- Only 3.8% of the top matched trails were non cancer related
-- The model consistently matched patients to a small subset of non-cancer trials (for exampel scoliosis)
+Our current analysis reveals a strong bias toward cancer related trials in the top match results:
+- Only 3.8% of the top matched trials were non cancer related
+- The model consistently matched patients to a small subset of non-cancer trials (for example scoliosis)
 - This is most likely due to the Word2Vec and TF-IDF embeddings being trained on a cancer heavy corpus which resulted in a narrow semantic space.
 
 ### Improvements for Future
-- Diversity the training corpus by including more non-cancer trials
+- Diversify the training corpus by including more non-cancer trials
 - Separate embeddings or models by condition category to avoid domain contamination
 - Refactor eval process to track match diversity and clinical relevance by each medical field
 
-### Trail Likelihood Scoring 
-- Training a DecisionTreeCLassifier using metadata such as the trial phase, sponsor type, location, completion rate, and so on
+### Trial Likelihood Scoring 
+- Training a DecisionTreeClassifier using metadata such as the trial phase, sponsor type, location, completion rate, and so on
 - Include a success likelihood alongside the match score for a more holistic view
-- This would help prioritize not only relevant trails, but also trials that are likely to be completed.
+- This would help prioritize not only relevant trials, but also trials that are likely to be completed.
 
 ## Running the project
 - Run python src/main.py
