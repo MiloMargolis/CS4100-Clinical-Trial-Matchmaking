@@ -55,7 +55,7 @@ Modern clinical trials often struggle with recruitment failures and design misma
    - Load patient data from CSV or database.
 2. **NLP Preprocessing**
    - Use `gensim` for preprocessing, tokenization, and Word2Vec (word embedding).
-   - Afer tokenization and stopword removal, a Word2Vec model is trainied on the full corpus. Then the TF-IDK isused to weight the word by importance and rarity.
+   - Afer tokenization and stopword removal, a Word2Vec model is trainied on the full corpus. Then the TF-IDF is used to weigh the word by importance and rarity.
    - The final sentence embedings are computed as TF-IDF weighted averages of the Word2Vec vectors and normalized to unit vectors. 
 3. **Similarity Matching**
    - Use `scikit-learn` for TF-IDF (Term Frequency-Inverse Document Frequency) and cosine similarity
