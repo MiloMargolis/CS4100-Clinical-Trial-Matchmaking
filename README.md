@@ -19,9 +19,6 @@ Modern clinical trials often struggle with recruitment failures and design misma
   - trial_embeddings.csv
   - patient_trial_similarity.csv
 
-**notebooks** directory:
-- exploration.ipynb
-
 **src** directory:
 - main.py
 - word_embedding.py
