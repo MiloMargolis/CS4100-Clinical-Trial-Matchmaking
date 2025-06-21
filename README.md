@@ -12,11 +12,12 @@ Modern clinical trials often struggle with recruitment failures and design misma
 - Rank trials based on **fit** and (optionally) **success probability**
 
 ## Document Overview
+- requirements.txt: project dependencies
+
 **data** directory:
   - clinical_trials.csv
   - patient_data.csv
-  - patient_embeddings.csv
-  - trial_embeddings.csv
+  - patient_trial_knn_top5.csv
   - patient_trial_similarity.csv
 
 **src** directory:
@@ -25,9 +26,10 @@ Modern clinical trials often struggle with recruitment failures and design misma
 - predictive_model.py
 - data_ingestion.py
 - visualize_data.py
-- word_embedding.py
 - patient_data_ingestion.py
-- nlp_matchking.py (original test, not used in final product)
+- nlp_matching.py (not used in final product)
+- analyze_non_cancer_matches.py
+- trial_frequency.py
 
 ## Features
 
@@ -85,8 +87,10 @@ Our current analysis reveals a strong bias toward cancer related trials in the t
 - This would help prioritize not only relevant trials, but also trials that are likely to be completed.
 
 ## Running the project
+- Clone the repository with: git clone <repo_url>
+- Install the dependencies listed in requirements.txt with: pip install -r requirements.txt 
 - Run python src/main.py
-- This will load the data, train the embeddings preforms the matching, and save the output to a CSV.
+  - This will load the data, train the embeddings preforms the matching, and save the output to a CSV.
 
 ## AI Citations:
 - ChatGPT-4o
