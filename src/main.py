@@ -17,7 +17,10 @@ from src.word_embedding import (
 def load_trial_data(filepath):
     return pd.read_csv(filepath)
 
-
+# matches patients to clinical trials with both NLP and KNN methods. returns the top n (default currently set to 5)
+# trial matches for each patient.
+# given patients dataframe, clinical trials dataframe, trained w2v model, trained tfidf vectorizer,
+# and a number for the top n trials (can change top_n to be however many trials you want to match a patient to)
 def match_patients_to_trials(patients_df, trials_df, w2v_model, tfidf_vectorizer, top_n=5):
     trial_vectors = weighted_embedding_bulk(trials_df, "trial", tfidf_vectorizer, w2v_model)
     top_knn_matches = []

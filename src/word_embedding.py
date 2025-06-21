@@ -1,3 +1,8 @@
+"""
+This file uses Word2Vec and TFIDFVectorizer to compute word embeddings, word weightings, and weighted embeddings.
+These computed vectors are then used in KNN predictions.
+"""
+
 from gensim.models import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
 from gensim.parsing.preprocessing import STOPWORDS
@@ -12,23 +17,14 @@ def preprocess_text(text):
     return [token for token in tokens if token not in STOPWORDS]
 
 # trains the word2vec given corpus (the text) by turning words in corpus to vectors
-# first preprocess text using simple_preprocess (makes lowercase, cuts non-alphabetical,
-# cuts word of length < 2 and > 50, and turns into list)
-def train_word2vec(corpus):  # should we change the window, vector size, or mincount??
+# first preprocess text using preprocess_text above
+def train_word2vec(corpus):
     # preprocess the list of strings - and removes any stopwords
     tokenized_corpus = [preprocess_text(text) for text in corpus]
     # train the w2v model with vector size 100, window 5 (# of words on either side of target to consider as context)
     # and the min_count of words of 1 - meaning that even if it only appears once it is added to vocab
     w2v_model = Word2Vec(sentences=tokenized_corpus, vector_size=100, window=5, min_count=1)
     return w2v_model
-
-# corpus = patients_df["Condition"].tolist() + trials_df["Eligibility"].tolist()
-# model = train_word2vec(corpus)
-
-'''
-a note of some functions available to use on a w2v model:
-# w2v_model.wv.most_similar('raynauds') -- computes cosine similarities (returns words closest)
-'''
 
 # to give more weight to the less common and more significant terms (i.e., medical terminology)
 # trains a tfidf vectorizer with the given text!
@@ -40,8 +36,7 @@ def fit_tfidf_vect(text):
 # to compare semantic meaning of sentences - returns single vector (weighted average of word vectors) for sentence
 # uses tf-idf scores as weights
 def weighted_sentence_embedding(text, id, tfidf_vectorizer, w2v_model):
-    # text = " ".join([t for t in text]) # switch from a list of strings to a singular string to fit preprocess
-    # preprocess text - but only < 50 and if not a stopword
+    # preprocess text
     words = preprocess_text(text)
 
     tfidf_weights = tfidf_vectorizer.transform([" ".join(words)]) # transform into feature vector (sparse matrix)
@@ -104,6 +99,6 @@ def weighted_embedding_bulk(specific_df, what, tfidf_vectorizer, w2v_model):
 def save_w2v_model(model, path):
     model.save(path)
 
-# load in a previusly saved word2vec model from the disk 
+# load in a previously saved word2vec model from the disk
 def load_w2v_model(path):
     return Word2Vec.load(path)

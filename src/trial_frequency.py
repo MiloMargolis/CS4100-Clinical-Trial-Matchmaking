@@ -1,3 +1,7 @@
+"""
+This file is designed to visualize the top 10 most frequently matched clinical trials in a bar chart.
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns

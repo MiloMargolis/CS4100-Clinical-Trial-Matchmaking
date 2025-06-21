@@ -1,6 +1,6 @@
 """
-This file loades anonymized patient data from a CSV file for batch
-matching to clinical trials.
+This file loads anonymized patient data from a CSV file for batch matching to clinical trials. Results are saved to
+'data/patient_data.csv'.
 """
 import pandas as pd
 

@@ -1,5 +1,10 @@
 import pandas as pd
 
+"""
+This file loads analyzes non-cancer related matches between patients and trials, computing the amount of non-cancer 
+matches and showing some of them.
+"""
+
 # load in the data
 matches_df = pd.read_csv("data/patient_trial_knn_top5.csv")
 trials_df = pd.read_csv("data/clinical_trials.csv")

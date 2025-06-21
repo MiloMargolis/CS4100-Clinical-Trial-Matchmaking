@@ -4,10 +4,11 @@ import pandas as pd
 
 """
 The purpose of this file is the implement the NLP-based similarity functions 
-for matching patients to clinical trial criteria. It uses cosine similarity on the TF-IDF vectors
+for matching patients to clinical trial criteria. It uses cosine similarity on the TF-IDF vectors.
+** Note: this is NOT used in our final main.py
 """
 
-# computes the cosine similary between patient keywords and eligibility
+# computes the cosine similarity between patient keywords and eligibility
 # handles missing values by converting to empty strings
 def compute_similarity(patient_keywords, eligibility_text):
     patient_keywords = str(patient_keywords) if patient_keywords else ''

@@ -1,17 +1,11 @@
+"""
+This file is designed for KNN predictions to best match patients to clinical trials.
+"""
+
 import numpy as np
-import pandas as pd
-from pathlib import Path
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.datasets import make_classification
-import matplotlib.pyplot as plt
 
-
-# TODO: Change the distannce to precentage.
-
-#using knn to find a list of best clincal trails for a patient
-#if clinal trail and patienrsa have their names in the vector
+# using knn to find a list of the best clinical trails for a patient
+# if clinal trail and patients have their names in the vector
 
 def knn(patient_to_predict, trials, k):
     # get all distances between the patient and each trial
@@ -55,10 +49,10 @@ new_patient2 = ['Patient 2', 10, 0, 1, 0]
 
 new_patients = [new_patient1, new_patient2]
 
-#function that lest us find the best clincal trails for each patient in a list of patients
-def knn_mutiple_patients(patients, trials, k):
+#function that lest us find the best clinical trails for each patient in a list of patients
+def knn_multiple_patients(patients, trials, k):
     patients_too_match_with_ct = []
-    #go through the list of pateinst and perform knn of them to the clinal trails
+    # go through the list of patients and perform knn of them to the clinal trails
     for unique_patient in patients:
         patient_name = unique_patient[0]
         matches = knn(unique_patient, trials, k)
@@ -66,5 +60,5 @@ def knn_mutiple_patients(patients, trials, k):
     return patients_too_match_with_ct
 
 
-test = knn_mutiple_patients(new_patients, new_trials, 2)
+test = knn_multiple_patients(new_patients, new_trials, 2)
 print(test)
