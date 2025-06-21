@@ -15,21 +15,21 @@ Modern clinical trials often struggle with recruitment failures and design misma
 - requirements.txt: project dependencies
 
 **data** directory:
-  - clinical_trials.csv
-  - patient_data.csv
-  - patient_trial_knn_top5.csv
+  - clinical_trials.csv: clinical trials data
+  - patient_data.csv: patient data
+  - patient_trial_knn_top5.csv: match results from running main.py
   - patient_trial_similarity.csv
 
 **src** directory:
-- main.py
-- word_embedding.py
-- predictive_model.py
-- data_ingestion.py
-- visualize_data.py
-- patient_data_ingestion.py
-- nlp_matching.py (not used in final product)
-- analyze_non_cancer_matches.py
-- trial_frequency.py
+- main.py: match patients to trials (using NLP and KNN)
+- word_embedding.py: create word embeddings, weightings, and weighted embeddings
+- predictive_model.py: knn match-making predictions
+- data_ingestion.py: load clinical trial data
+- visualize_data.py: visualize embeddings
+- patient_data_ingestion.py: load patient data
+- nlp_matching.py (not used in final product): computes cosine similarity (not used in final product)
+- analyze_non_cancer_matches.py: analyzes non-cancer matches
+- trial_frequency.py: visualize 10 most frequently matched trials
 
 ## Features
 
@@ -56,13 +56,14 @@ Modern clinical trials often struggle with recruitment failures and design misma
    - Use `requests` and `pandas` to load clinical trial data.
    - Load patient data from CSV or database.
 2. **NLP Preprocessing**
-   - Use `gensim` for preprocessing, tokenization, and Word2Vec (word embedding).
-   - Afer tokenization and stopword removal, a Word2Vec model is trainied on the full corpus. Then the TF-IDF is used to weigh the word by importance and rarity.
-   - The final sentence embedings are computed as TF-IDF weighted averages of the Word2Vec vectors and normalized to unit vectors. 
+   - For preprocessing: use `regex` (tokenization and lowercasing) and `gensim` (stopword removal)
+   - After preprocessing, a Word2Vec model and TF-IDF (Term Frequency-Inverse Document Frequency) Vectorizer are trained on full corpus of all trials and patients
+     - Use `gensim` for Word2Vec (word embedding - by semantic meaning and context)
+     - Use `scikit-learn` for TF-IDF Vectorizer (word weighing - by importance and rarity)
+   - The final embeddings are computed as TF-IDF weighted averages of the Word2Vec vectors and normalized to unit vectors. 
+     - Essentially converting all patient conditions and trial eligibilities to vectors
 3. **Similarity Matching**
-   - Use `scikit-learn` for TF-IDF (Term Frequency-Inverse Document Frequency)
-   - Convert patient profiles and trial eligibility criteria to vectors using `TfidfVectorizer`.
-   - Use **K-Nearest Neighbors (KNN)** to find the top k clincal trails that match for the patient using the patient's and trails' vectors.
+   - Use **K-Nearest Neighbors (KNN)** to find the top k clinical trails that match for the patient using the patient's and trails' vectors.
    - Calculate **Euclidean distance** between the patient and trails' embeddings and convert it to a match score using 100 / (1 + distance).
 4. **Ranking**
    - Combine similarity scores and success probabilities to rank trials for each patient. Match scores are calculated using the formula score = 100 / (1 + distance) which helps to assign higher scores to closer matches.
@@ -89,7 +90,7 @@ Our current analysis reveals a strong bias toward cancer related trials in the t
 - Clone the repository with: git clone <repo_url>
 - Install the dependencies listed in requirements.txt with: pip install -r requirements.txt 
 - Run python src/main.py
-  - This will load the data, train the embeddings preforms the matching, and save the output to a CSV.
+  - This will load the data, train the embeddings preforms the matching, and save the output to a CSV (patient_trial_knn_top5.csv).
 
 ## AI Citations:
 - ChatGPT-4o
