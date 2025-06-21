@@ -62,10 +62,9 @@ Modern clinical trials often struggle with recruitment failures and design misma
 3. **Similarity Matching**
    - Use `scikit-learn` for TF-IDF (Term Frequency-Inverse Document Frequency)
    - Convert patient profiles and trial eligibility criteria to vectors using `TfidfVectorizer`.
-   - Calculate **Euclidean distance** between the vector embeddings and convert it to a match score using 100 / (1 + distance).
-4. **Predictive Modeling (Future steps)**
-   - Use a `DecisionTreeClassifier` from `scikit-learn` to estimate trial success probability.
-5. **Ranking**
+   - Use **K-Nearest Neighbors (KNN)** to find the top k clincal trails that match for the patient using the patient's and trails' vectors.
+   - Calculate **Euclidean distance** between the patient and trails' embeddings and convert it to a match score using 100 / (1 + distance).
+4. **Ranking**
    - Combine similarity scores and success probabilities to rank trials for each patient. Match scores are calculated using the formula score = 100 / (1 + distance) which helps to assign higher scores to closer matches.
 
 ## Next Steps
