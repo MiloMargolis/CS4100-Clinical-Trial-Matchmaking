@@ -18,7 +18,6 @@ Modern clinical trials often struggle with recruitment failures and design misma
   - clinical_trials.csv: clinical trials data
   - patient_data.csv: patient data
   - patient_trial_knn_top5.csv: match results from running main.py
-  - patient_trial_similarity.csv
 
 **src** directory:
 - main.py: match patients to trials (using NLP and KNN)
