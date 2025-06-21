@@ -14,18 +14,12 @@ def knn(patient_to_predict, trials, k):
         trial_vector = np.array(trial[1:], dtype=float)
         patient_vector = np.array(patient_to_predict[1:], dtype=float)
         all_distances.append(np.linalg.norm(patient_vector - trial_vector))
-    # find the max distance 
-    # if all_distances:
-    #    max_distance = max(all_distances)
-    # else:
-    #    max_distance = 1.0
 
     scored = []
     for (trial, distance) in zip(trials, all_distances):
-        name = trial[0] # current name
-        # formula
-        # score = (1 - distance / max_distance) * 100
-        score = score = 100 / (1 + distance)
+        name = trial[0] # current name of this trail
+        # matching score formula:
+        score = 100 / (1 + distance)
         scored.append((name, score)) 
     
     scored.sort(key=lambda item: item[1], reverse=True)
