@@ -36,6 +36,7 @@ Modern clinical trials often struggle with recruitment failures and design misma
 - **Patient Matching**: Match patients to trials using:
   - Structured fields (age, sex, condition)
   - NLP-based keyword matching for eligibility criteria.
+  - KNN matchmaking algorithmn
 - **Predictive Modeling**: (Future steps) Predict the likelihood of trial success using a Decision Tree. 
 - **Visualizations**: Display relevant plots (e.g. matching distributions).
 
@@ -65,7 +66,7 @@ Modern clinical trials often struggle with recruitment failures and design misma
    - Use **K-Nearest Neighbors (KNN)** to find the top k clinical trails that match for the patient using the patient's and trails' vectors.
    - Calculate **Euclidean distance** between the patient and trails' embeddings and convert it to a match score using 100 / (1 + distance).
 4. **Ranking**
-   - Combine similarity scores and success probabilities to rank trials for each patient. Match scores are calculated using the formula score = 100 / (1 + distance) which helps to assign higher scores to closer matches.
+   - Use the Match scores calculated which helps to assign higher scores to closer matches and output the top K best fit trails.
 
 ## Next Steps
 
