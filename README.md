@@ -87,7 +87,7 @@ Our current analysis reveals a strong bias toward cancer related trials in the t
 - This would help prioritize not only relevant trials, but also trials that are likely to be completed.
 
 ## Running the project
-- Clone the repository with: git clone <repo_url>
+- Clone the repository with: git clone https://github.com/MiloMargolis/CS4100-Clinical-Trial-Matchmaking.git
 - Install the dependencies listed in requirements.txt with: pip install -r requirements.txt 
 - Run python src/main.py
   - This will load the data, train the embeddings preforms the matching, and save the output to a CSV (patient_trial_knn_top5.csv).
